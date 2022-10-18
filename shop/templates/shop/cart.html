@@ -1,0 +1,93 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+  .card-body {display: grid;grid-template-columns: 1fr 1fr;}
+  .crtview {display: grid; grid-template-columns: 1fr 2fr 1fr; margin: 0px 50px;}
+  .paymentin{margin: 10px; padding: 10px; background-color: azure; box-shadow: 0px 5px 10px rgb(114, 114, 114); color: rgb(100, 100, 100);
+              height: fit-content;
+  }
+  @media screen and (max-width: 600px) {
+    .card-body {display: grid;grid-template-columns: 1fr 1fr; padding: 5px;}
+    .crtview {display: flex; flex-direction:column; margin: 10px;}
+    .crtitems{ height: fit-content;}
+  }
+</style>
+
+<br>
+<div class="crtview">
+  <div class="paymentin"> 
+    <h5>PRICE DETAILS<h5><hr>
+    <small>Total items : {{itemcount}}</small><br><br>
+    <small>Price : ₹ {{subtotal}}</small><br><br>
+    <small>Delivery Charges : FREE </small><br><br>
+    <hr>
+    <h5>Price : ₹ {{subtotal}}</h5>
+  </div>
+  <div class="crtitems">
+  {% for item in items %}
+     {% if request.user == item.user %} 
+     <div class="card"> 
+          <div class="card-header">
+            {{item.product.category}}
+          </div>
+          <div class="card-body">
+              <div><a href="{% url 'productview' item.product.id %}"><img src="{{item.product.prodpic.url}}" alt="Card image cap" height="150vh" width="150vw"></a></div>
+              <div style="margin-left:10px ;">
+                <h5 class="card-title"><a href="{% url 'productview' item.product.id %}" style="color:black ; text-decoration:none;">{{item.product.product_name}}</a></h5>
+                <p class="card-text">₹ {{item.product.price}}</p>
+                  <div style="display:flex ;flex-direction:row;">
+                      <form method="GET" action="{% url 'removeitem' %}">
+                        <input type="hidden" value="{{request.user}}" name="user" />
+                        <input type="hidden" value="{{item.id}}" name="pid" />
+                        <input type="submit" value="-" class="btn btn-primary" name="-"/> 
+                      </form>
+                        <button class="btn btn-light" disabled>{{item.quantity}}</button>
+                      <form method="GET" action="{% url 'addtocart' %}">
+                        <input type="hidden" value="{{request.user}}" name="user" />
+                        <input type="hidden" value="{{item.product}}" name="product" />
+                        <input type="submit" value="+" class="btn btn-primary"/> 
+                      </form>
+                  </div>
+                <br>
+                <form method="GET" action="{% url 'removeitem' %}">
+                  <input type="hidden" value="{{request.user}}" name="user" />
+                  <input type="hidden" value="{{item.id}}" name="pid" />
+                  <input
+                    type="submit"
+                    value="Remove item"
+                    class="btn btn-primary"/>
+                </form>
+                  
+              </div>
+            </div>
+          </div><br>
+          
+        {% endif %}
+    {% endfor %}   
+     </div>
+
+  <div style="margin: 10px; padding: 10px;"> 
+    <form method="GET" action="{% url 'placeorder' %}">
+      <input type="hidden" name="order_code" value="{{request.user.id}}">
+      <input type="hidden" name="customer" value="{{request.user}}">
+      <label>Deliver To</label><br>
+      <textarea id="w3review" placeholder="Address" name="address" rows="4" cols="50" class="form-control" required></textarea>
+      <label>City</label><br>
+      <input type="text" placeholder="Address" name="city" class="form-control" required>
+      <label>Phone</label><br>
+      <input type="tel"  name="phone"  maxlength="10" minlength="10" class="form-control" required> <br>
+      {% if itemcount == 0 %}
+      <input type="submit" style="justify-content: center;" class="btn btn-warning text-light" value="Place Order" id="pay" disabled>
+      {% else %}
+      <input type="submit" style="justify-content: center;" class="btn btn-warning text-light" value="Place Order" id="pay" >
+      {% endif %}
+    </form>
+  </div>
+
+</div>
+<script>
+  pay=document.getElementById('pay');
+
+</script>
+{% endblock content %}

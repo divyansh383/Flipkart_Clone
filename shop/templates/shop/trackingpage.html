@@ -1,0 +1,121 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+  .card-body {display: grid;grid-template-columns: 1fr 1fr;}
+  .trkview {display: grid; grid-template-columns: 1fr 1fr; margin: 0px 50px;}
+  .trkin{margin: 10px; padding: 10px;
+              height: 75vh;
+              display: grid;
+              grid-template-columns: 1fr 3fr;
+  }
+  .trkitems{ overflow-y: scroll; height: 75vh;margin: 10px; padding: 10px;}
+  
+  @media screen and (max-width: 600px) {
+    .card-body {display: grid;grid-template-columns: 1fr 1fr;}
+    .trkview {display: flex; flex-direction:column; margin: 0px;}
+    .trkitems{ height: fit-content; padding: 5px;}
+    .trkin{height: 100%; margin:0px; padding:5px;}
+  }
+</style>
+<br>
+<h5 style="margin: 0px 50px">TRACK ORDER<hr></h5>
+<div class="trkview">
+  <div class="trkin"> 
+    <div style="padding: 10px; background-color: azure; width:max-content;">
+      <div class="progress progress-bar-vertical">
+        {% if tracker.isdelivered %}
+          <div class="customer progress-bar bg-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="height: 100%;"></div>
+        {% elif tracker.isofd %}
+          <div class="customer progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="height: 88%;"></div>
+        {% elif tracker.isreceived %}
+          <div class="customer progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="height: 62%;"></div>
+        {% elif tracker.isdispatched %}
+          <div class="customer progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="height: 36%;"></div>
+        {% else %}
+        <div class="customer progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="height: 10%;"></div>
+        {% endif %}
+      </div>
+      <div style="display:flex ; justify-content:space-around; flex-direction: column; height: 100%;" >
+        <small>Placed</small>
+        <small>Dispatched</small>
+        <small>Recieved</small>
+        <small>Out For Delivery</small>
+        <small>Delivered</small>
+      </div>
+    </div>
+    <div style=" padding: 10px;" >
+      {% if tracker.isdelivered %}
+      <ul>
+        {% for ord in order %}{% ifchanged %}<li>{{ord.placed_on}}</li>{% endifchanged %}{% endfor %}</li>
+        <small style="color:green ;">Order Placed</small><br><br>
+        <li>{{tracker.dispatchedtime}}</li>
+        <small>Item is dispatched from the seller {{seller}} at {{seller.address}}</small><br><br>
+        <li>{{tracker.receivedtime}}</li>
+        <small>{{tracker.receivedmsg}}</small><br><br>
+        <li>{{tracker.ofdtime}}</li>
+        <small>{{tracker.ofdmsg}}</small><br><br>
+        <li>{{tracker.deliveredtime}}</li>
+        <small style="color:green ;">delivered to </small>{% for ord in order %}{% ifchanged %}<small>{{ord.customer}}</small>{% endifchanged %}{% endfor %}<br>
+      </ul>
+      {% elif tracker.isofd %}
+      <ul>
+        {% for ord in order %}{% ifchanged %}<li>{{ord.placed_on}}</li>{% endifchanged %}{% endfor %}</li>
+        <small style="color:green ;">Order Placed</small><br><br>
+        <li>{{tracker.dispatchedtime}}</li>
+        <small>Item is dispatched from the seller {{seller}} at {{seller.address}}</small><br><br>
+        <li>{{tracker.receivedtime}}</li>
+        <small>{{tracker.receivedmsg}}</small><br><br>
+        <li>{{tracker.ofdtime}}</li>
+        <small>{{tracker.ofdmsg}}</small><br><br>
+      </ul>
+      {% elif tracker.isreceived %}
+      <ul>
+        {% for ord in order %}{% ifchanged %}<li>{{ord.placed_on}}</li>{% endifchanged %}{% endfor %}</li>
+        <small style="color:green ;">Order Placed</small><br><br>
+        <li>{{tracker.dispatchedtime}}</li>
+        <small>Item is dispatched from the seller {{seller}} at {{seller.address}}</small><br><br>
+        <li>{{tracker.receivedtime}}</li>
+        <small>{{tracker.receivedmsg}}</small><br><br>
+      </ul>
+      {% elif tracker.isdispatched %}
+      <ul>
+        {% for ord in order %}{% ifchanged %}<li>{{ord.placed_on}}</li>{% endifchanged %}{% endfor %}</li>
+        <small style="color:green ;">Order Placed</small><br><br>
+        <li>{{tracker.dispatchedtime}}</li>
+        <small>Item is dispatched from the seller {{seller}} at {{seller.address}}</small>
+      </ul>
+      {% else %}
+      <ul>
+        {% for ord in order %}{% ifchanged %}<li>{{ord.placed_on}}</li>{% endifchanged %}{% endfor %}</li>
+        <small style="color:green ;">Order Placed</small><br><br>
+      </ul>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="trkitems">
+  {% for ord in order %} 
+     <div class="card"> 
+          <div class="card-header">Tracking id : 
+            {{ord.order_code}}
+          </div>
+          <div class="card-body">
+              <div><a href="{% url 'productview' ord.item.id %}"><img src="{{ord.item.prodpic.url}}" alt="Card image cap" height="150vh" width="150vw"></a></div>
+              <div style="margin-left:10px ;">
+                <h5 class="card-title"><a href="{% url 'productview' ord.item.id %}" style="color:black ; text-decoration:none;">{{ord.item.product_name}}</a></h5>
+                <p class="card-text">₹ {{ord.item.price}} |
+                Quantity {{ord.quantity}}</p>
+              </div>
+            </div>
+     </div>
+    {% endfor %}   
+  </div>
+
+</div>
+<script>
+  let prog=document.getElementsByClassName('customer');
+  
+</script>
+{% endblock content %}

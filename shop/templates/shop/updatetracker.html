@@ -1,0 +1,154 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<div style="margin:0px 50px;">
+  <div>
+    <table class="table table-hover">
+        <thead class="table thead-dark">
+          <tr>
+            <th scope="col">Order No.</th>
+            <th scope="col">Date</th>
+            <th scope="col">Item</th>
+            <th scope="col">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+      {% for ord in order %}
+
+      {% if ord.delivered == False %}
+                {% ifchanged %}
+                <tr class="bg-secondary text-light"><td>{{ord.order_code}}<br>Phone : {{ord.phone}}</td>
+                  <td colspan="2">Address : {{ord.address}}<br>City : {{ord.city}}</td>
+                  <td>{{ord.customer}}<br>
+                  </td>
+                </tr>
+                {% endifchanged %}
+                <tr>
+                  <th scope="row">{{ord.id}}</th>
+                  <td>{{ord.placed_on}}</td>
+                  <td>{{ord.item.product_name}}</td>
+                  <td>{{ord.quantity}}</td>
+                  
+                </tr> 
+          </div><br>
+            
+          {% endif %}
+      {% endfor %}   
+        </tbody>
+      </table>
+  </div>
+  
+  <div class="updation">
+    <div class="progress" style="margin:10px 100px;">
+      <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+    </div>
+    <form class="form-check" method="post" action="#">
+      {% csrf_token %}
+    <div style="display:flex ; justify-content: space-around; margin:10px 100px;">
+        <p>placed
+        <input class="form-check-input" type="checkbox" value="placed" id="placed" name="status" checked disabled></p>
+        <p>dispatched
+        {% if tracker.isdispatched %}
+          <input class="form-check-input" type="checkbox" value="dispatched" name="status" checked disabled></p>
+        {% else %}
+          <input class="form-check-input" type="checkbox" value="dispatched" name="status" disabled></p>
+        {% endif %}
+
+        <p>recieved
+        {% if tracker.isdispatched and tracker.isreceived %}
+          <input class="form-check-input" type="checkbox" value="recieved" name="status" checked disabled></p>
+        {% elif tracker.isdispatched %}
+          <input class="form-check-input" type="checkbox" value="recieved" name="status"></p>
+        {% else %}
+          <input class="form-check-input" type="checkbox" value="recieved" name="status" disabled></p>
+        {% endif %}
+
+        <p>out for delivery
+        {% if tracker.isreceived and tracker.isofd %}
+          <input class="form-check-input" type="checkbox" value="out_for_delivery" name="status" checked disabled></p>
+        {% elif tracker.isreceived %}
+          <input class="form-check-input" type="checkbox" value="out_for_delivery" name="status" ></p>
+        {% else %}
+          <input class="form-check-input" type="checkbox" value="out_for_delivery" name="status" disabled></p>
+        {% endif %}
+
+        <p>delivered
+        {% if tracker.isofd and tracker.isdelivered %}
+          <input class="form-check-input" type="checkbox" value="delivered" name="status" checked disabled></p>
+        {% elif tracker.isofd %}
+          <input class="form-check-input" type="checkbox" value="delivered" name="status"></p>
+        {% else %}
+          <input class="form-check-input" type="checkbox" value="delivered" name="status" disabled></p>
+        {% endif %}
+
+    </div>
+  </div>
+</div>
+
+<div class="updation">
+  <div style="margin:10px 100px;">
+    <textarea  placeholder="details" rows="4" cols="50" class="det form-control" name="msge"></textarea>
+    <input type="submit" class="btn btn-primary" value="save" name="{{ord.order_code}}">
+  </div>
+  
+  </form>
+</div>
+
+
+<script>
+let stte=document.getElementsByClassName('form-check-input');
+let progress=document.getElementsByClassName('progress-bar');
+let details=document.getElementsByClassName('det form-control');
+
+details[0].style.display="none";
+
+
+if(stte[1].checked){
+    progress[0].style.width="40%";
+}
+if(stte[2].checked){
+    progress[0].style.width="60%";
+}
+if(stte[3].checked){
+    progress[0].style.width="80%";
+}
+if(stte[4].checked){
+    progress[0].style.width="100%";
+}
+stte[2].addEventListener('change',()=>{
+  if(stte[2].checked){
+    stte[1].checked=true;
+    progress[0].style.width="60%";
+    details[0].style.display="block";
+  }
+  else{
+    stte[4].checked=false;
+    stte[3].checked=false;
+    progress[0].style.width="40%";
+    details[0].style.display="none";
+  }
+})
+stte[3].addEventListener('change',()=>{
+  if(stte[3].checked){
+    stte[1].checked=true;
+    stte[2].checked=true;
+    progress[0].style.width="80%";
+    details[0].style.display="block";
+  }
+  else{
+    stte[4].checked=false;
+    progress[0].style.width="60%";
+    details[0].style.display="none";
+  }
+})
+stte[4].addEventListener('change',()=>{
+  if(stte[4].checked){
+    stte[1].checked=true;
+    stte[2].checked=true;
+    stte[3].checked=true;
+    progress[0].style.width="100%";
+  }
+  else{progress[0].style.width="80%";}
+})
+</script>
+{% endblock content%}

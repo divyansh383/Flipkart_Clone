@@ -1,0 +1,183 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+  .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+  }
+  .sortion{ display: none; }
+
+  #box {
+      width: 100vw;
+      display: flex;
+      min-width: 600px;
+      flex-direction: row;
+      color: white;
+      justify-content: space-around;
+      background-color: rgb(255, 255, 255);
+      box-shadow: 0px 0px 10px rgb(61, 61, 61);
+  }
+
+  .catcon {
+      width: 200px;
+      min-width: 100px;
+      margin: 10px;
+  }
+
+  #view{
+    margin: 0px 50px;display: grid; grid-template-columns: 1fr 4fr
+  }
+  @media screen and (max-width: 600px) {
+    body {
+      background-color: lightgreen;
+      margin: 0px;
+    }
+    .sort-filter{
+      display: none;
+    }
+    #view{
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+    }
+    .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+   }
+   #desc{
+    display: none;
+   }
+   .sortion{display: block; }
+   #box { width: 200vh; }
+  }
+</style>
+  <div style="width: 100vw; overflow-x:scroll;">
+    <div id="box">
+      {% for cat in category %}
+        <div class="catcon text-center"><a style="text-decoration: none; color: rgb(0, 0, 0);" href="{% url 'search' %}?q={{cat.category_name}}"><p>{{cat.category_name}}&nbsp<p></a></div><br>
+      {% endfor %}
+    </div>
+</div>
+  
+  <div class="col" id="view">
+    <div style="margin:10px ;" class="sort-filter">
+      
+      <div class="dropdown">
+        <button style="width: 100%;" class="btn btn-secondary dropdown" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a style="text-decoration: none; color: rgb(255, 255, 255);" href="{% url 'search' %}?q={{cat.category_name}}"><h5>filter</h5></a>
+        
+        <hr>
+        <div class="menu" aria-labelledby="dropdownMenuButton">
+          <form method="get" action="{% url 'search'  %}?q={{cat.brand}}&?cost=0">
+            <label>Brand : </label>
+            <select name="s" class="btn btn-light dropdown">
+              
+                {% if q == "" %}
+                  {% ifchanged %}<option value={{s}}>All</option>{% endifchanged %}
+                  {% for cat in product %}  
+                    {% ifchanged %}<option value={{cat.brand}}>{{cat.brand}}</option>{% endifchanged %}
+                  {% endfor %}
+                {% else %}
+                  {% for cat in product %} 
+                    {% ifchanged %}<option value={{q}}>All</option>{% endifchanged %}
+                    {% ifchanged %}<option value={{cat.brand}}>{{cat.brand}}</option>{% endifchanged %}
+                  {% endfor %}
+                {% endif %}
+            </select>
+            <hr>
+            <label>Price :</label>
+            <input type="range" min="1" max="100000" value="100000" name="cost"><hr>
+            <label>Sort :</label>
+            <select name="isort" class="btn btn-light dropdown">
+              <option value="-created">Latest</option>
+              <option value="-price">High to Low</option>
+              <option value="price">Low to High</option>
+            </select><hr>
+            <input type="submit" value="Apply" class="btn btn-light"><br>
+          </form>
+        </div>
+      </div>
+    </button>
+    </div>
+
+    <div>  
+        <div class="sortion">
+            <button style="width: 100%;" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              Filter | Sort
+            </button>
+          <div class="collapse" id="collapseExample">
+                <div  style="background-color:rgb(165, 175, 179) ; display: flex; justify-content: center;">
+                  <div class="menu" aria-labelledby="dropdownMenuButton">
+                    <form method="get" action="{% url 'search'  %}?q={{cat.category_name}}&?cost=0">
+                      
+                      <label>Brand : </label>
+                      <select name="s" class="btn btn-light dropdown">
+                        <option value={{product.category}}>All</option>
+                          {% if q == "" %}
+                            {% ifchanged %}<option value={{q}}>All</option>{% endifchanged %}
+                            {% for cat in product %}
+                              {% ifchanged %}<option value={{cat.brand}}>{{cat.brand}}</option>{% endifchanged %}
+                            {% endfor %}
+                          {% else %}
+                            {% for cat in product %}
+                              {% ifchanged %}<option value={{cat.category}}>All</option>{% endifchanged %}
+                              {% ifchanged %}<option value={{cat.brand}}>{{cat.brand}}</option>{% endifchanged %}
+                            {% endfor %}
+                          {% endif %}
+                      </select>
+                      <hr>
+                      <label>Price :</label>
+                      <input type="range" min="1" max="10000" value="5000" name="cost"><hr>
+                      <label>Sort :</label>
+                      <select name="isort" class="btn btn-light dropdown">
+                        <option value="-created">Latest</option>
+                        <option value="-price">High to Low</option>
+                        <option value="price">Low to High</option>
+                      </select><hr>
+                      <input type="submit" value="Apply" class="btn btn-light"><br><br>
+                    </form>
+                  </div>
+                </div>
+            </div>
+          </div>
+        <br>
+    {% for product in product %}
+        
+        <div class="card">
+          <div class="card-header">
+            {{product.category}}
+          </div>
+          <div class="card-body">
+            <div><a href="{% url 'productview' product.id %}"><img src="{{product.prodpic.url}}" alt="Card image cap" height="150vh" ></a></div>
+            <div style="margin-left:10px ;">
+              <h5 class="card-title"><a href="{% url 'productview' product.id %}" style="color:black ; text-decoration:none;">{{product.product_name}}</a></h5>
+              <div style="justify-content:space-around; display: flex;flex-direction: row;"><span class="card-text">₹{{product.price}}</span>
+                {% if product.avgrating != None %}
+                  <small style="background-color: rgb(31, 124, 67); max-width: fit-content; border-radius:5px; padding: 5px; color: white;">
+                    {{product.avgrating}}&nbsp<i class="starts fa fa-star fa-lg " style="color:rgb(255, 255, 255) ;"   aria-hidden="true"></i></small>
+                {% endif %}</div>
+              <form method="GET" action="{% url 'addtocart' %}">
+                {% if request.user.is_authenticated %}
+                  <input type="hidden" value="{{request.user}}" name="user" />
+                  <input type="hidden" value="{{product}}" name="product" />
+                {% endif %}
+                <input
+                  type="submit"
+                  value="Add to Cart"
+                  class="btn btn-primary"
+                />
+              </form>
+            </div>
+            <div style="margin-left:10px ;">
+              <p class="card-text" id="desc">{{product.desc}}</p>
+            </div>
+          </div>
+        </div>
+        <br>
+      
+    {% endfor %}
+    </div>   
+  </div>
+
+{% endblock content %}

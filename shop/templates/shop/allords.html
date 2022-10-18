@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+  .card-body {display: grid;grid-template-columns: 1fr 1fr 2fr;}
+  .ordview {margin: 0px 100px;}
+ 
+  @media screen and (max-width: 600px) {
+    .card-body {display: grid;grid-template-columns: 1fr 1fr;}
+    .ordview {display: flex; flex-direction:column;}
+    .orditems{ height: fit-content;}
+  }
+</style>
+
+<div class="ordview">
+  <div class="orditems">
+    <table class="table table-hover">
+      <thead class="table thead-dark">
+        <tr>
+          <th scope="col">Order No.</th>
+          <th scope="col">Date</th>
+          <th scope="col">Item</th>
+          <th scope="col">Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for ord in orders %}
+     {% if ord.delivered == False %}
+              {% ifchanged %}
+              <tr class="bg-secondary text-light"><td>{{ord.order_code}}<br>Phone : {{ord.phone}}</td>
+                <td colspan="2">Address : {{ord.address}}<br>City : {{ord.city}}</td>
+                <td>{{ord.customer}}<br>
+                    <a href="{% url 'updatetracker' ord.order_code %}"><button class="btn btn-primary btn-sm">Update</button></a>
+                </td>
+              </tr>
+              {% endifchanged %}
+              <tr>
+                <th scope="row">{{ord.id}}</th>
+                <td>{{ord.placed_on}}</td>
+                <td>{{ord.item.product_name}}</td>
+                <td>{{ord.quantity}}</td>
+              </tr> 
+        </div><br>
+          
+        {% endif %}
+    {% endfor %}   
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock content %}

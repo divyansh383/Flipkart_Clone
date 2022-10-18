@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+  .card-body {display: grid;grid-template-columns: 1fr 1fr 2fr;}
+  .ordview {margin: 0px 100px;}
+ 
+  @media screen and (max-width: 600px) {
+    .card-body {display: grid;grid-template-columns: 1fr 1fr;}
+    .ordview {display: flex; flex-direction:column; margin: 5px;}
+    .orditems{ height: fit-content; overflow-x: scroll;}
+  }
+</style>
+<div class="ordview">
+  <div class="orditems">
+    <table class="table table-hover">
+      <thead class="table thead-dark">
+        <tr>
+          <th scope="col">Order No.</th>
+          <th scope="col">Date</th>
+          <th scope="col">Item</th>
+          <th scope="col">Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for ord in orders %}
+     {% if request.user.seller == ord.seller and ord.delivered == False %}
+              {% ifchanged %}
+              <tr class="bg-secondary text-light"><td>{{ord.order_code}}<br>Phone : {{ord.phone}}</td>
+                <td colspan="2">Address : {{ord.address}}<br>City : {{ord.city}}</td>
+                <td>{{ord.customer}}<br>
+                  <form class="form-check" method="post" action="{% url 'deals' %}">
+                    {% csrf_token %}
+                    {% if not ord.dispatched %}
+                    <input class="form-check-input" type="checkbox" value="{{ord.order_code}}"  name="check">
+                    {% else %}
+                    <input class="form-check-input" type="checkbox" value="{{ord.order_code}}"  checked disabled>
+                    {% endif %}
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Dispatched
+                    </label>
+                </td>
+              </tr>
+              {% endifchanged %}
+              <tr>
+                <th scope="row">{{ord.id}}</th>
+                <td>{{ord.placed_on}}</td>
+                <td>{{ord.item.product_name}}</td>
+                <td>{{ord.quantity}}</td>
+                
+              </tr> 
+        </div><br>
+          
+        {% endif %}
+    {% endfor %}   
+      </tbody>
+    </table>
+    
+      <input type="submit" class="btn btn-primary" value="save" name="{{ord.order_code}}">
+    </form>
+  </div>
+
+</div>
+{% endblock content %}

@@ -1,0 +1,94 @@
+{% extends 'main.html' %}
+{% block content %}
+
+{% if page == 'login' %}
+<div class="form" >
+    <div class="rom">
+        <form method="POST" action="">
+        {% csrf_token %}
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter username" >
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Enter Password">
+            </div>
+            <div class="mb-3">
+                <div style="display:flex ; justify-content: space-around;">
+                    <button type="submit" value="Login" class="btn btn-primary">Login</button>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <small>haven't signed up yet ?</small><br>
+                <a href="{% url 'register' %}">Sign-up</a>
+            </div>
+        </form>
+        
+    </div>
+</div>
+{% endif %}
+
+{% if page == 'register' %}
+    {% if not request.user.is_authenticated %}
+    <div class="form">
+        <div class="rom">
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    {{form.as_p}}<br>
+                </div>
+                <input type="submit" value="Register">
+                <div style="text-align:center;">
+                    <small>already signed up ?</small><br>
+                    <a href="{% url 'login-page' %}">Log-in</a>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+    {% endif %}
+{% endif %}
+
+{% if page == 'sellerreg' %}
+<div class="form" >
+    <div class="rom">
+        <form method="POST" action="">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{form.as_p}}<br>
+        </div>
+        <div class="mb-3">
+            <div style="display:flex ; justify-content: space-around;">
+                <button type="submit"  class="btn btn-primary">&nbsp&nbsp<a class="text-light" style="text-decoration: none;" href="{% url 'home' %}">Back</a>&nbsp&nbsp</button>
+                <button type="submit"  class="btn btn-primary">Register</button>
+            </div>
+        </div>
+        </form>
+        
+    </div>
+</div>
+{% endif %}
+
+{% if page == 'addproduct' %}
+<div class="form" >
+    <div class="rom">
+        <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{form.as_p}}<br>
+        </div>
+        <div class="mb-3">
+            <div style="display:flex ; justify-content: space-around;">
+                <button type="submit"  class="btn btn-primary">&nbsp&nbsp<a class="text-light" style="text-decoration: none;" href="{% url 'home' %}">Back</a>&nbsp&nbsp</button>
+                <button type="submit"  class="btn btn-primary">Add Product</button>
+            </div>
+        </div>
+        </form>
+        
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}

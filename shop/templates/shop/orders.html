@@ -1,0 +1,62 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+  .card-body {display: grid;grid-template-columns: 1fr 1fr;}
+  .ordview {display: grid; grid-template-columns: 1.5fr 3fr; margin: 0px 50px;}
+ 
+  @media screen and (max-width: 600px) {
+    .card-body {display: grid;grid-template-columns: 1fr 1fr;margin: 0px;padding: 1px;}
+    .ordview {display: flex; flex-direction:column; margin: 20px;}
+    .orditems{ height: fit-content;}
+  }
+</style>
+
+<br>
+<div class="ordview">
+  <div> 
+  </div>
+  <div class="orditems">
+  {% for ord in orders %}
+     {% if request.user == ord.customer %} 
+     <div class="card"> 
+          <div class="card-header">
+            {{ord.item.product.category}}
+          </div>
+          <div class="card-body">
+              <div><a href="{% url 'productview' ord.item.id %}"><img src="{{ord.item.prodpic.url}}" alt="Card image cap" height="150vh" width="150vw"></a></div>
+              <div style="margin-left:10px ;">
+                <h5 class="card-title"><a href="{% url 'productview' ord.item.id %}" style="color:black ; text-decoration:none;">{{ord.item.product_name}}</a></h5>
+                <p class="card-text">₹ {{ord.item.price}} | 
+                Quantity {{ord.quantity}}</p>
+                <small class="card-text">Placed on {{ord.placed_on}}</small>
+                <div style="display:flex ; flex-direction:row;">
+                  {% if ord.delivered == False and ord.cancelled == False %}
+                    <form method="GET" action="{% url 'cancelorder' ord.order_code %} ">
+                      <input
+                        type="submit"
+                        value="Cancel Order"
+                        class="btn btn-primary"/>
+                    </form>&nbsp
+                    <form method="GET" action="{% url 'TrackingStatus' ord.order_code %} ">
+                      <input
+                        type="submit"
+                        value="Track item"
+                        class="btn btn-primary"/>
+                    </form>
+                  {% elif ord.cancelled  %}
+                    <p style="color:red ;">Cancelled</p>
+                  {% else %}
+                    <p class="text-success">Delivered</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div><br>
+          
+        {% endif %}
+    {% endfor %}   
+     </div>
+
+</div>
+{% endblock content %}

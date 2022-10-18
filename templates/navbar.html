@@ -1,0 +1,148 @@
+<style>
+    #nv{
+        margin: 0px 100px;
+    }
+    .navbar{
+      box-shadow: 0px 0px 10px  rgb(61, 61, 61);
+      color: white;
+      position: fixed;
+      width: 100%;
+      z-index: 5;
+    }
+    .navbar a:hover{
+      text-shadow: rgb(232, 233, 174) 0px 0 10px;
+    }
+    .sbitems{
+      margin: 10px ; padding: 10px; background-color: aliceblue; border-radius: 10px;
+    }
+    .sidebar{
+      background-image: linear-gradient(to bottom right,
+      rgb(255, 242, 126), rgb(235, 231, 175),rgb(255, 242, 126)); z-index: 
+      3; position: fixed; height: 100vh; width: 20vw; 
+      box-shadow: 5px 5px 10px 0px gray;
+    }
+    .buffer{ height: 68px;}
+    *{transition-duration: 0.2s;}
+    #br2{ display:none;  }
+    #bt2{ display:none;  }
+    #bt1{ display:flex; flex-direction:row;}
+
+
+    @media screen and (max-width: 800px) {
+     .buffer{ height: 110px;}
+     #nv{
+      margin: 0px 2px;
+     }
+     #br1{ display:none;  }
+     #bt1{ display:none;  }
+     #br2{ display:block; }
+     #bt2{ display:flex; flex-direction:row;}
+  }
+</style>
+
+{% load static %}
+
+<nav class="navbar navbar-light bg-primary">
+    <div class="container-fluid" id="nv">
+      <a class="navbar-brand text-light" href="/"><h3>MyShop</h3></a>
+      <div id="br1">
+        <form role="search" method="GET" action="{% url 'search' %}" style="display:flex; flex-direction:row;">
+          <input class="form-control me-2" type="search" name="q" placeholder="Search for Products" aria-label="Search" style="width:40vw;">
+          <button type="submit"  class="btn btn-light text-light"><a href="{% url 'search' %}"><i class="fa fa-search" aria-hidden="true"></i></a></button>
+        </form>
+      </div>
+      
+    {% if request.user.is_authenticated %}
+      <div style="display:flex; flex-direction:row;">
+        <div class="btn-group" id="bt1">
+          <a href="{% url 'cart' %}" style="text-decoration:none ;"><i class="fa fa-shopping-cart" aria-hidden="true" style="color:rgb(255, 255, 255)"></i></a>&nbsp 
+          <a href="{% url 'cart' %}" class="text-light">Cart</a>&nbsp &nbsp  
+          <a >@{{request.user}}</a>
+        </div>
+        <div class="btn-group" id="bt2">
+          <a >@{{request.user}}</a>&nbsp &nbsp
+          <button  class="btn btn-outline-secondary" id="open2"><i class="fa fa-bars fa-lg" aria-hidden="true" style="color: white;"></i></button>
+        </div>
+      </div>
+
+      <div id="bt1">
+        <button  class="btn btn-outline-secondary" id="open"><i class="fa fa-bars fa-lg" aria-hidden="true" style="color: white;"></i></button>
+      </div>
+      
+    {% else %}
+      <div style="display:flex; flex-direction:row;">
+        <button class="btn btn-light text-dark"><a href="{% url 'login-page' %}">Login</a></button>
+      </div>
+    {% endif %}
+
+      <div id="br2">
+        <form role="search" method="GET" action="{% url 'search' %}" style="display:flex; flex-direction:row;">
+          <input class="form-control me-2" type="search" name="q" placeholder="Search for Products" aria-label="Search" style="width:78vw;">
+          <button type="submit"  class="btn btn-light text-dark"><a href="{% url 'search' %}"><i class="fa fa-search" aria-hidden="true"></i></a></button>
+        </form>
+      </div><br><br>
+    </div>
+</nav>
+
+<div class="buffer"></div>
+
+<div class="sidebar">
+  <div class="sbitems" >
+    <h4>{{request.user}}</h4>
+  </div>
+  
+  <div class="sbitems">
+    <ul style="list-style-type: none;">
+      <li><a href="{% url 'yourorder' %}" style="text-decoration:none"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>&nbspYour Orders</a></li>
+      <li><a href="{% url 'search' %}" style="text-decoration:none"><i class="fa fa-search" aria-hidden="true"></i> Shop</a></li>
+      <li><a href="{% url 'cart' %}" style="text-decoration:none"><i class="fa fa-shopping-cart" aria-hidden="true" ></i>&nbspCart</a></li>
+      {% if request.user != seller.user %}
+        <li><a href="{% url 'selreg' %}" style="text-decoration:none"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbspBecome a seller</a></li>
+      {% else %}
+        <li><a href="{% url 'deals' %}" style="text-decoration:none"><i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbspDeals</a></li>
+      {% endif %}
+      {% if request.user.is_authenticated %}
+        <li><a href="{% url 'logout' %}" style="text-decoration:none"><i class="fa fa-sign-out" aria-hidden="true" ></i>&nbsp Log out</a></li>
+      {% endif %}
+      {% if request.user.is_staff %}
+      <li><a href="{% url 'all_orders'  %}" style="text-decoration:none"><i class="fa fa-sign-out" aria-hidden="true" ></i>&nbsp Manage Orders</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div> 
+
+<script>
+let sb=document.getElementsByClassName('sidebar');
+let opn=document.getElementById('open');
+let opn2=document.getElementById('open2');
+let sbitems=document.getElementsByClassName('sbitems');
+let nv=document.getElementById('nv');
+console.log(nv.style.height)
+sb[0].style.width = "0px";
+sbitems[0].style.display="none"
+sbitems[1].style.display="none"
+opn.addEventListener('click',()=>{
+  if(sb[0].style.width != "0px"){
+    sb[0].style.width = "0px";
+    sbitems[0].style.display="none"
+    sbitems[1].style.display="none"
+  }
+  else{
+    sb[0].style.width = "25vw";
+    sbitems[0].style.display="block"
+    sbitems[1].style.display="block"
+  }
+})
+opn2.addEventListener('click',()=>{
+  if(sb[0].style.width != "0px"){
+    sb[0].style.width = "0px";
+    sbitems[0].style.display="none"
+    sbitems[1].style.display="none"
+  }
+  else{
+    sb[0].style.width = "75vw";
+    sbitems[0].style.display="block"
+    sbitems[1].style.display="block"
+  }
+})
+</script>

@@ -1,0 +1,74 @@
+body {
+    background-image: linear-gradient(to bottom right,rgb(225, 236, 236),rgb(156, 187, 187), rgb(225, 236, 236));
+}
+
+.categories {
+    display: flex;
+    flex-direction: row;
+}
+/*hg*/
+.fa-stack[data-count]:after{
+    position:absolute;
+    left:50%;
+    top:1%;
+    content: attr(data-count);
+    font-size:70%;
+    padding:.6em;
+    border-radius:999px;
+    line-height:.75em;
+    color: white;
+    background:rgba(255,0,0,.85);
+    text-align:center;
+    min-width:2em;
+    font-weight:bold;
+}
+/*---*/
+.form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius:10px ;
+}
+
+.rom{
+    background-color:rgb(255, 253, 161);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    border-radius:10px ;
+    margin: 5%;
+    padding: 5%;
+    box-sizing: border-box;
+    box-shadow: 0px 2px 10px black;
+}
+/* progbr*/
+.progress-bar-vertical {
+    width: 20px;
+    min-height: 100px;
+    height: 100%;
+    margin-right: 20px;
+    float: left;
+    display: -webkit-box;  
+    display: -ms-flexbox;  
+    display: -webkit-flex; 
+    display: flex;
+    align-items: flex-end;
+    -webkit-transform: rotate(180deg);
+    -webkit-align-items: flex-end; 
+  }
+  
+  .progress-bar-vertical .progress-bar {
+    width: 100%;
+    height: 0;
+    -webkit-transition: height 0.6s ease;
+    -o-transition: height 0.6s ease;
+    transition: height 0.6s ease;
+  }
+
+.mydiv{
+    justify-content:space-around;
+    display: flex;
+    flex-direction: row;
+}

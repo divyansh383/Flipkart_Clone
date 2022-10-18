@@ -1,0 +1,212 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+  .productimgview{
+    padding: 50px; background-color: rgb(197, 197, 197); display: flex; justify-content: center; box-shadow: 0px 0px 10px black;
+  }
+  .prod-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  #pics{  height: 25rem;}
+
+  .ratingview{
+    margin: 10px; padding: 10px;
+    display: grid; grid-template-columns: 2fr 1fr;
+  }
+  .reviewslist{
+    height:50vh ; background-color: aliceblue; max-height: 100vh; overflow-y: scroll;
+  }
+  .rate{
+    height:fit-content ; background-color: rgb(27, 53, 77); padding: 10px;margin: 10px;
+  }
+  @media screen and (max-width: 600px) {
+    #pics{ width: 15rem; height: 15rem;}
+    .ratingview{
+      display: flex;
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div class="row sm-2">
+  <div class="productimgview col">
+    <img id="pics" src="{{product.prodpic.url}}" alt="Card image cap">
+  </div>
+  <div class="col" style="padding: 50px;">
+    <div style="border-radius: 10px; background-color: rgb(255, 255, 255); padding: 20px;">
+      <h2>{{product.product_name}}</h2>
+      <h4>₹ {{product.price}}</h4>
+      <p>{% if product.avgrating != None %}
+        <small style="background-color: rgb(31, 124, 67); max-width: fit-content; border-radius:5px; padding: 5px; color: white;">
+          {{product.avgrating}}&nbsp<i class="fa fa-star fa-lg " style="color:rgb(255, 255, 255) ;"   aria-hidden="true"></i></small>
+      {% endif %}</p>
+      <hr>
+      <form method="GET" action="{% url 'addtocart' %}" class="in" style="bottom:0 ;">
+        <input type="hidden" value="{{request.user}}" name="user" />
+        <input type="hidden" value="{{product}}" name="product" />
+        <input type="submit" value="Add to Cart" class="btn btn-warning"/>
+      </form>
+      <hr>
+      <span>{{product.brand}}&nbsp&nbsp{{product.category}}&nbsp&nbsp{{product.subcategory}}</span><br><br>
+      <p>{{product.desc}}</p>
+      
+    </div>
+  </div>
+  <hr>
+</div>
+
+<div class="ratingview">
+  <h3>Reviews</h3><br><hr><br>
+  <div class="reviewslist">
+    {% for rev in reviews%}
+      <div style="padding:5px; margin: 10px;">
+        <strong>{{rev.reviewer}}</strong><br>
+        <div>
+          <i class="fa fa-star" aria-hidden="true"></i>&nbsp{{rev.rating}}
+          <small>{{rev.added|timesince}} ago</small>
+        </div>
+        <div style="padding:10px; background-color: white; border-radius: 10px; box-shadow: 0px 2px 5px gray;">
+          <small>{{rev.review}}</small>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="rate">
+    <br>
+    <div style="justify-content:center; display: flex;" >
+      <br>
+          <i class="starts fa fa-star fa-lg " style="color:gray ;"   aria-hidden="true"></i>&nbsp
+          <i class="starts fa fa-star fa-lg " style="color:gray ;"   aria-hidden="true"></i>&nbsp
+          <i class="starts fa fa-star fa-lg " style="color:gray ;"   aria-hidden="true"></i>&nbsp
+          <i class="starts fa fa-star fa-lg " style="color:gray ;"   aria-hidden="true"></i>&nbsp
+          <i class="starts fa fa-star fa-lg " style="color:gray ;"   aria-hidden="true"></i>
+      <br>
+    </div>
+    <button style="width: 100%; border-radius: 0px;" class="rtbutton btn btn-warning text-light" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      Rate Product
+    </button>
+    <div class="collapse" id="collapseExample">
+      <div  style=" display: flex; justify-content: center;">
+        <div class="menu" aria-labelledby="dropdownMenuButton">
+          <br>
+          <form method="post" action="{% url 'productview' product.id  %}">
+          {% csrf_token %}
+          <textarea  placeholder="Write a review" name="rev" rows="4" cols="50" class="form-control"></textarea><br>
+          <input type="hidden" name="q" class="ratecounter">
+          <button class="btn btn-warning" type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<script>
+  str=document.getElementsByClassName("starts");
+  rtbutton=document.getElementsByClassName('rtbutton')
+  rc=document.getElementsByClassName('ratecounter');
+  let pressed1=false;
+  let pressed2=false;
+  let pressed3=false;
+  let pressed4=false;
+  let pressed5=false;
+  //--------------------------------
+  rtbutton[0].disabled=true;
+  //-----------------------
+  str[0].addEventListener('mouseover',()=>{
+    str[0].style.color="yellow";
+  })
+  str[0].addEventListener('click',()=>{
+    str[0].style.color="yellow";
+    pressed1=true;
+    rc[0].value=1;
+    rtbutton[0].disabled=false;
+  })
+  str[0].addEventListener('mouseout',()=>{
+    if(pressed1 == false){
+      str[0].style.color="gray";}
+  })
+  //---------------------------------------
+  str[1].addEventListener('mouseover',()=>{
+    str[0].style.color="yellow";
+    str[1].style.color="yellow";
+  })
+  str[1].addEventListener('click',()=>{
+    str[0].style.color="yellow"; str[1].style.color="yellow";
+    pressed1=true; pressed2=true;
+    rc[0].value=2;
+    rtbutton[0].disabled=false;
+  })
+  str[1].addEventListener('mouseout',()=>{
+    if(pressed2 == false){
+      str[0].style.color="gray";
+      str[1].style.color="gray";
+    }
+  })
+
+  //----------------------------------------
+  str[2].addEventListener('mouseover',()=>{
+    str[0].style.color="yellow"; str[1].style.color="yellow"; str[2].style.color="yellow";
+  })
+  str[2].addEventListener('click',()=>{
+    str[0].style.color="yellow"; str[1].style.color="yellow";str[2].style.color="yellow";
+    pressed1=true; pressed2=true; pressed3=true;
+    rc[0].value=3;
+    rtbutton[0].disabled=false;
+  })
+  str[2].addEventListener('mouseout',()=>{
+    if(pressed3==false){str[0].style.color="gray"; str[1].style.color="gray"; str[2].style.color="gray";}
+  })
+  //-------------------------------------------
+  str[3].addEventListener('mouseover',()=>{
+    str[0].style.color="yellow";
+    str[1].style.color="yellow";
+    str[2].style.color="yellow";
+    str[3].style.color="yellow";
+  })
+  str[3].addEventListener('click',()=>{
+    str[0].style.color="yellow"; str[1].style.color="yellow";str[2].style.color="yellow";str[3].style.color="yellow";
+    pressed1=true; pressed2=true; pressed3=true; pressed4=true;
+    rc[0].value=4;
+    rtbutton[0].disabled=false;
+  })
+  str[3].addEventListener('mouseout',()=>{
+    if(pressed4==false){
+    str[0].style.color="gray";
+    str[1].style.color="gray";
+    str[2].style.color="gray";
+    str[3].style.color="gray";}
+  })
+  //---------------------------------------------
+  
+  str[4].addEventListener('mouseover',()=>{
+    str[0].style.color="yellow";
+    str[1].style.color="yellow";
+    str[2].style.color="yellow";
+    str[3].style.color="yellow";
+    str[4].style.color="yellow";
+    
+  })
+  str[4].addEventListener('click',()=>{
+    str[0].style.color="yellow"; 
+    str[1].style.color="yellow";
+    str[2].style.color="yellow";
+    str[3].style.color="yellow";
+    str[4].style.color="yellow";
+    pressed1=true; pressed2=true; pressed3=true; pressed4=true;pressed5=true;
+    rc[0].value=5;
+    rtbutton[0].disabled=false;
+  })
+  str[4].addEventListener('mouseout',()=>{
+    if(pressed5==false){
+    str[0].style.color="gray";
+    str[1].style.color="gray";
+    str[2].style.color="gray";
+    str[3].style.color="gray";
+    str[4].style.color="gray";}
+  })
+</script>
+{% endblock content %}
