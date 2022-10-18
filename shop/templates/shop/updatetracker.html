@@ -15,7 +15,7 @@
         <tbody>
       {% for ord in order %}
 
-      {% if ord.delivered == False %}
+      {% if ord.delivered == False and ord.cancelled == False %}
                 {% ifchanged %}
                 <tr class="bg-secondary text-light"><td>{{ord.order_code}}<br>Phone : {{ord.phone}}</td>
                   <td colspan="2">Address : {{ord.address}}<br>City : {{ord.city}}</td>

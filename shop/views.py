@@ -95,7 +95,7 @@ def index(request):
 
     try:
         seller=Seller.objects.get(user=user)
-        orders=Orders.objects.filter(seller=seller,delivered=False).count()
+        orders=Orders.objects.filter(seller=seller,delivered=False,cancelled=False).count()
     except:
         seller=None
         orders=None
@@ -338,6 +338,7 @@ def deals(request):
                 prods.stock-=int(i.quantity)
                 prods.save()
                 i.save()
+                return redirect("home")
 
     context={"user":user,"orders":orders,"seller":seller,"updates":updates}
     #return HttpResponse("orders")
@@ -370,6 +371,9 @@ def updatetracker(request,tid):
         if(not i.dispatched):
             disp=False
             break
+        else:
+            disp=True
+    print(disp)
     #---------------------------------
     if disp and trk.isdispatched==False:
         trk=Tracker.objects.get(tracking_id=tid)
@@ -378,6 +382,7 @@ def updatetracker(request,tid):
         trk.isdispatched=True
         trk.dispatchedtime=tim
         trk.save()
+        return redirect("manageorders")
     #----------------
     if(stts=="recieved"):
         print("----------recieved-------------")
