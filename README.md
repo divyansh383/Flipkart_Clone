@@ -33,5 +33,12 @@ The Flipkart Clone App includes the following features:
 
 7. **Responsive Design**: The app is designed to provide a seamless experience across different devices and screen sizes, ensuring accessibility and usability.
 
+![Alt text](/static/s1.png)
+![Alt text](/static/s2.png)
+![Alt text](/static/s3.png)
+![Alt text](/static/s4.png)
+![Alt text](/static/s5.png)
+![Alt text](/static/s6.png)
+![Alt text](/static/s7.png)
 
 
